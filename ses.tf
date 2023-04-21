@@ -7,7 +7,7 @@ resource "aws_sesv2_email_identity" "email_identity" {
 }
 
 locals {
-  status = aws_sesv2_email_identity.email_identity_data.dkim_signing_attributes[0].status
+  status = aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status
 }
 
 resource "aws_sesv2_configuration_set" "ses_configuration" {
