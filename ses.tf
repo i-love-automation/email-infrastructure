@@ -32,4 +32,6 @@ resource "aws_sesv2_configuration_set" "ses_configuration" {
   }
 
   tags = local.tags
+
+  depends_on = [aws_sesv2_email_identity.email_identity]
 }
