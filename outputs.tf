@@ -3,7 +3,7 @@ locals {
     "ses_configuration_set_name" = {
       hcl       = false
       sensitive = false
-      value     = aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status == "SUCCESS" ? aws_sesv2_configuration_set.ses_configuration[0].configuration_set_name : ""
+      value     = aws_sesv2_configuration_set.ses_configuration.configuration_set_name
     }
     "ses_verified_email_identity_source_arn" = {
       hcl       = false
