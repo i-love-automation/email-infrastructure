@@ -10,7 +10,7 @@ locals {
       sensitive = false
       value     = aws_sesv2_email_identity.email_identity.arn
     }
-    "ses_verified_email_identity_source_arn" = {
+    "ses_domain_verification_success" = {
       hcl       = false
       sensitive = false
       value     = aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status == "SUCCESS"
