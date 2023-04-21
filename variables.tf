@@ -30,6 +30,12 @@ variable "domain_name" {
   default     = ""
 }
 
+variable "ses_domain_verification_success" {
+  type        = bool
+  nullable    = true
+  description = "Domain is verified by SES"
+  default     = false
+}
 #variable "hosting_zone_name" {
 #  type        = string
 #  nullable    = false
