@@ -7,8 +7,6 @@ resource "aws_sesv2_email_identity" "email_identity" {
 }
 
 resource "aws_sesv2_configuration_set" "ses_configuration" {
-  count = try(aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status, "PENDING") == "SUCCESS" ? 1 : 0
-
   configuration_set_name = "project_configuration_set"
 
   delivery_options {
@@ -32,6 +30,4 @@ resource "aws_sesv2_configuration_set" "ses_configuration" {
   }
 
   tags = local.tags
-
-  depends_on = [aws_sesv2_email_identity.email_identity]
 }
