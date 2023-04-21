@@ -6,12 +6,8 @@ resource "aws_sesv2_email_identity" "email_identity" {
   }
 }
 
-locals {
-  status = aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status
-}
-
 resource "aws_sesv2_configuration_set" "ses_configuration" {
-  count = local.status == "SUCCESS" ? 1 : 0
+  count = try(aws_sesv2_email_identity.email_identity.dkim_signing_attributes[0].status, "PENDING") == "SUCCESS" ? 1 : 0
 
   configuration_set_name = "project_configuration_set"
 
