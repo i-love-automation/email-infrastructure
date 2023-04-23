@@ -16,3 +16,14 @@ resource "aws_route53_record" "ses_cnames" {
   ttl     = "300"
   records = ["${each.value}.dkim.amazonses.com"]
 }
+
+resource "aws_route53_record" "mx_record_for_receiving" {
+  zone_id = var.hosting_zone_id
+  name    = var.domain_name
+  type    = "MX"
+  ttl     = "300"
+
+  records = [
+    "inbound-smtp.us-east-1.amazonaws.com"
+  ]
+}
