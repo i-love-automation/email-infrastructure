@@ -24,6 +24,6 @@ resource "aws_route53_record" "mx_record_for_receiving" {
   ttl     = "300"
 
   records = [
-    "inbound-smtp.us-east-1.amazonaws.com"
+    "10 inbound-smtp.us-east-1.amazonaws.com"
   ]
 }
