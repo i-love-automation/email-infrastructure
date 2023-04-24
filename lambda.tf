@@ -1,8 +1,3 @@
-locals {
-  lambda_source_path = "${path.module}/email_forwarding_lambda"
-  lambda_output_path = "${path.module}/email_forwarding_lambda_output"
-}
-
 module "templated_lambda" {
   source       = "github.com/codingones/terraform-remote-template-renderer"
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
@@ -28,12 +23,8 @@ resource "local_file" "packagejson" {
 }
 
 resource "null_resource" "install_lambda_dependencies" {
-  triggers = {
-    source_path = local.lambda_source_path
-  }
-
   provisioner "local-exec" {
-    command = "pwd && cd ${path.module} && npm install"
+    command = "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs && npm install"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
