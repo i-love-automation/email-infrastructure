@@ -46,6 +46,6 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
 
   lambda_action {
     position     = 1
-    function_arn = aws_lambda_function.email_forwarding.arn
+    function_arn = aws_lambda_alias.email_forwarding_alias.arn
   }
 }
