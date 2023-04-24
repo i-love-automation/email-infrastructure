@@ -33,7 +33,7 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command = "/opt/hostedtoolcache/node/18.16.0/x64/bin/npm install --prefix ${local.lambda_source_path}"
+    command = "pwd && cd ${path.module} && npm install"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
