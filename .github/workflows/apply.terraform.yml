@@ -33,7 +33,7 @@ jobs:
         with:
           node-version: 18
       
-      - run: npm --version
+      - run: which npm
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
