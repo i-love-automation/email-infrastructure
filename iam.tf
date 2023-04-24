@@ -10,6 +10,28 @@ resource "aws_iam_role" "lambda_execution_role" {
         Principal = {
           Service = "lambda.amazonaws.com"
         }
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource" : "arn:aws:logs:*:*:*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : "ses:SendRawEmail",
+        "Resource" : "*"
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Resource" : "arn:aws:s3:::${local.ses_bucket_name}/*"
       }
     ]
   })
