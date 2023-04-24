@@ -42,8 +42,8 @@ resource "aws_ses_receipt_rule_set" "rule_set" {
 resource "aws_ses_receipt_rule" "email_forwarding" {
   name          = "email_forwarding"
   rule_set_name = aws_ses_receipt_rule_set.rule_set.rule_set_name
-  recipients    = ["*@${var.domain_name}"]
-  enabled       = true
+  recipients    = ["${var.domain_name}"]
+  enabled       = true1
 
 
   lambda_action {
@@ -51,6 +51,6 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
     function_arn    = aws_lambda_function.email_forwarding.arn
     invocation_type = "Event"
   }
-  
-   depends_on = [aws_lambda_permission.allow_ses]
+
+  depends_on = [aws_lambda_permission.allow_ses]
 }
