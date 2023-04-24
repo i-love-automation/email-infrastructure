@@ -1,3 +1,8 @@
+locals {
+  lambda_source_path = "${path.module}/email_forwarding_lambda"
+  lambda_output_path = "${path.module}/email_forwarding_lambda_output"
+}
+
 module "templated_lambda" {
   source       = "github.com/codingones/terraform-remote-template-renderer"
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
@@ -8,15 +13,43 @@ module "templated_lambda" {
   }
 }
 
-data "archive_file" "lambda_zip" {
-  type = "zip"
-  source {
-    content  = module.templated_lambda.rendered
-    filename = "index.js"
-  }
-  output_path = "${path.module}/lambda_function.zip"
+resource "local_file" "indexjs" {
+  content  = module.templated_lambda.rendered
+  filename = "${path.module}/index.js"
 }
 
+data "http" "packagejson" {
+  url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.dependencies.json"
+}
+
+resource "local_file" "packagejson" {
+  content  = data.http.packagejson.response_body
+  filename = "${path.module}/package.json"
+}
+
+resource "null_resource" "install_lambda_dependencies" {
+  triggers = {
+    source_path = local.lambda_source_path
+  }
+
+  provisioner "local-exec" {
+    command = "npm install --prefix ${local.lambda_source_path}"
+  }
+
+  depends_on = [local_file.indexjs, local_file.packagejson]
+}
+
+data "archive_file" "lambda_zip" {
+  type = "zip"
+
+  source_dir = path.module
+
+  excludes = ["${path.module}/package.json"]
+
+  output_path = "${path.module}/lambda_function.zip"
+
+  depends_on = [null_resource.install_lambda_dependencies]
+}
 resource "aws_lambda_function" "email_forwarding" {
   function_name    = "email_forwarding"
   handler          = "index.handler" # This should match your Lambda function's handler in the JavaScript code
@@ -26,6 +59,8 @@ resource "aws_lambda_function" "email_forwarding" {
   role             = aws_iam_role.lambda_execution_role.arn
   timeout          = 30
   publish          = true
+
+  depends_on = [data.archive_file.lambda_zip]
 }
 
 resource "aws_lambda_permission" "allow_ses" {
