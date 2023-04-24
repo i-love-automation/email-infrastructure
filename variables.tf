@@ -36,16 +36,18 @@ variable "ses_domain_verification_success" {
   description = "Domain is verified by SES"
   default     = false
 }
-#variable "hosting_zone_name" {
-#  type        = string
-#  nullable    = false
-#  description = "The name of the route53 hosting zone"
-#  default     = false
-#}
-#
+
+
 variable "hosting_zone_id" {
   type        = string
   nullable    = false
   description = "The id of the route53 hosting zone"
   default     = false
+}
+
+variable "domain_email_forward_addresses" {
+  type        = string
+  nullable    = false
+  description = "The emails addresses to forward the emails sent to the ses verified domain"
+  default     = "['email1@mail.com','email2@mail.com']"
 }
