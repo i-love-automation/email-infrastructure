@@ -39,13 +39,13 @@ resource "aws_ses_receipt_rule_set" "rule_set" {
   rule_set_name = "email_forwarding_rule_set"
 }
 
-resource "aws_ses_receipt_rule" "email_forwarding" {
-  name          = "email_forwarding"
-  rule_set_name = aws_ses_receipt_rule_set.rule_set.rule_set_name
-  recipients    = ["*@${var.domain_name}"]
-
-  lambda_action {
-    position     = 1
-    function_arn = aws_lambda_alias.email_forwarding_alias.arn
-  }
-}
+#resource "aws_ses_receipt_rule" "email_forwarding" {
+#  name          = "email_forwarding"
+#  rule_set_name = aws_ses_receipt_rule_set.rule_set.rule_set_name
+#  recipients    = ["*@${var.domain_name}"]
+#
+#  lambda_action {
+#    position     = 1
+#    function_arn = aws_lambda_alias.email_forwarding_alias.arn
+#  }
+#}
