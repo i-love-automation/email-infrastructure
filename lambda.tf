@@ -27,6 +27,14 @@ resource "aws_lambda_function" "email_forwarding" {
   timeout          = 30
 }
 
+resource "aws_lambda_alias" "email_forwarding_alias" {
+  name             = "live"
+  description      = "Live alias for the email forwarding Lambda function"
+  function_name    = aws_lambda_function.email_forwarding.function_name
+  function_version = "$LATEST"
+
+}
+
 resource "aws_lambda_permission" "allow_ses" {
   statement_id  = "AllowSESToInvokeLambda"
   action        = "lambda:InvokeFunction"
