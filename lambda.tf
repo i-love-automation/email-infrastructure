@@ -25,6 +25,7 @@ resource "aws_lambda_function" "email_forwarding" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda_execution_role.arn
   timeout          = 30
+  publish          = true
 }
 
 resource "aws_lambda_alias" "email_forwarding_alias" {
