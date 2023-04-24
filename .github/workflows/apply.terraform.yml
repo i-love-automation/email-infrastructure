@@ -33,7 +33,11 @@ jobs:
         with:
           node-version: 18
       
-      - run: which npm
+      - name: Check npm path and configure PATH
+        run: |
+          echo "npm path: $(which npm)"
+          echo "node_modules path: $(npm -g bin)"
+          echo "$(npm -g bin)" >> $GITHUB_PATH
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
