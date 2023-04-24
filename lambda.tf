@@ -33,5 +33,5 @@ resource "aws_lambda_permission" "allow_ses" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.email_forwarding.function_name
   principal     = "ses.amazonaws.com"
-  source_arn    = "arn:aws:ses:us-east-1:${data.aws_caller_identity.current_iam.account_id}:receipt-rule-set/${aws_ses_receipt_rule_set.rule_set.rule_set_name}:receipt-rule/${aws_ses_receipt_rule.email_forwarding.name}"
+  source_arn    = "arn:aws:ses:us-east-1:${data.aws_caller_identity.current_iam.account_id}:receipt-rule-set/${aws_ses_receipt_rule_set.rule_set.rule_set_name}:receipt-rule/email_forwarding"
 }
