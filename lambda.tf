@@ -3,6 +3,8 @@ module "templated_lambda" {
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
   template_variables = {
     EMAILS = var.domain_email_forward_addresses
+    DOMAIN = var.domain_name
+    BUCKET = local.ses_bucket_name
   }
 }
 
@@ -22,7 +24,7 @@ resource "aws_lambda_function" "email_forwarding" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda_execution_role.arn
-  timeout          = 10
+  timeout          = 30
 }
 
 resource "aws_lambda_permission" "allow_ses" {
@@ -30,6 +32,7 @@ resource "aws_lambda_permission" "allow_ses" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.email_forwarding.function_name
   principal     = "ses.amazonaws.com"
-  source_arn    = aws_ses_receipt_rule.email_forwarding.arn
+  source_arn    = "${aws_ses_receipt_rule.email_forwarding.arn}:*"
 }
+
 
