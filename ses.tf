@@ -51,4 +51,6 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
     function_arn    = aws_lambda_function.email_forwarding.arn
     invocation_type = "Event"
   }
+  
+   depends_on = [aws_lambda_permission.allow_ses]
 }
