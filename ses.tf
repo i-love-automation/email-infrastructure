@@ -43,7 +43,7 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
   name          = "email_forwarding"
   rule_set_name = aws_ses_receipt_rule_set.rule_set.rule_set_name
   recipients    = ["${var.domain_name}"]
-  enabled       = true1
+  enabled       = true
 
 
   lambda_action {
