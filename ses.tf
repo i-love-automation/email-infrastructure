@@ -46,8 +46,8 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
   enabled       = true
 
   s3_action {
-    position        = 1
-    bucket_name    = aws_lambda_function.email_forwarding.arn
+    position          = 1
+    bucket_name       = aws_lambda_function.email_forwarding.arn
     object_key_prefix = "emails/"
   }
 
