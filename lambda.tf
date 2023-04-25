@@ -24,7 +24,7 @@ resource "local_file" "packagejson" {
 
 resource "null_resource" "install_lambda_dependencies" {
   provisioner "local-exec" {
-    command = "curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash - && sudo apt-get install -y nodejs && npm install"
+    command = "pwd && mkdir -p ${path.module}/nodes_modules && touch ${path.module}/nodes_modules/test"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
