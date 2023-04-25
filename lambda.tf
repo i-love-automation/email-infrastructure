@@ -16,29 +16,23 @@ data "http" "packagejson" {
   url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.dependencies.json"
 }
 
-resource "null_resource" "create_directory" {
-  provisioner "local-exec" {
-    command = "mkdir -p ${path.module}/lambda"
-  }
-}
-
 resource "local_file" "indexjs" {
   content  = module.templated_lambda.rendered
   filename = "${path.module}/lambda/index.js"
-
-  depends_on = [null_resource.create_directory]
 }
 
 resource "local_file" "packagejson" {
   content  = data.http.packagejson.response_body
   filename = "${path.module}/lambda/package.json"
-
-  depends_on = [null_resource.create_directory]
 }
 
 resource "null_resource" "install_lambda_dependencies" {
+  triggers = {
+    regenerated_each_run = uuid()
+  }
+
   provisioner "local-exec" {
-    command = "which npm"
+    command = "ls -la ${path.module}/lambda && which npm"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
