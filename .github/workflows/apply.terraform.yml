@@ -33,6 +33,10 @@ jobs:
         with:
           node-version: 18
       
+      - name: Set NPM_PATH environment variable
+        run: |
+          echo "NPM_PATH=$(which npm)" >> $GITHUB_ENV
+      
       - name: Test
         run: |
           env
@@ -61,3 +65,5 @@ jobs:
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
+        env:
+          TF_VAR_npm_path: ${{ env.NPM_PATH }}
