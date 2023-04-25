@@ -1,7 +1,3 @@
-locals {
-  runner_home = "/home/runner/work/email-infrastructure/email-infrastructure"
-}
-
 module "templated_lambda" {
   source       = "github.com/codingones/terraform-remote-template-renderer"
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
@@ -12,41 +8,13 @@ module "templated_lambda" {
   }
 }
 
-data "http" "packagejson" {
-  url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.dependencies.json"
-}
-
-resource "local_file" "indexjs" {
-  content  = module.templated_lambda.rendered
-  filename = "${path.module}/lambda/index.js"
-}
-
-resource "local_file" "packagejson" {
-  content  = data.http.packagejson.response_body
-  filename = "${path.module}/lambda/package.json"
-}
-  
-resource "null_resource" "install_lambda_dependencies" {
-  triggers = {
-    regenerated_each_run = uuid()
-  }
-
-  provisioner "local-exec" {
-    command     = "chmod +x ${path.module}/lambda/execute.sh && ${path.module}/lambda/execute.sh"
-    interpreter = ["/bin/bash", "-c"]
-  }
-
-  depends_on = [local_file.indexjs, local_file.packagejson]
-}
-
 data "archive_file" "lambda_zip" {
   type = "zip"
-
-  source_dir = "${path.module}/lambda"
-
+  source {
+    content  = module.templated_lambda.rendered
+    filename = "index.js"
+  }
   output_path = "${path.module}/lambda_function.zip"
-
-  depends_on = [null_resource.install_lambda_dependencies]
 }
 
 resource "aws_lambda_function" "email_forwarding" {
@@ -58,8 +26,6 @@ resource "aws_lambda_function" "email_forwarding" {
   role             = aws_iam_role.lambda_execution_role.arn
   timeout          = 30
   publish          = true
-
-  depends_on = [data.archive_file.lambda_zip]
 }
 
 resource "aws_lambda_permission" "allow_ses" {
