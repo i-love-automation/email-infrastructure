@@ -1,3 +1,7 @@
+locals {
+  runner_home = '/home/runner/work/email-infrastructure/email-infrastructure'
+}
+
 module "templated_lambda" {
   source       = "github.com/codingones/terraform-remote-template-renderer"
   template_url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.js"
@@ -10,7 +14,7 @@ module "templated_lambda" {
 
 resource "local_file" "indexjs" {
   content  = module.templated_lambda.rendered
-  filename = "${path.module}/index.js"
+  filename = "${local.runner_home}/index.js"
 }
 
 data "http" "packagejson" {
@@ -19,12 +23,12 @@ data "http" "packagejson" {
 
 resource "local_file" "packagejson" {
   content  = data.http.packagejson.response_body
-  filename = "${path.module}/package.json"
+  filename = "${local.runner_home}/package.json"
 }
 
 resource "null_resource" "install_lambda_dependencies" {
   provisioner "local-exec" {
-    command = "pwd && mkdir -p ${path.module}/nodes_modules && touch ${path.module}/nodes_modules/test"
+    command = "cd ${local.runner_home} && ls -la"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
