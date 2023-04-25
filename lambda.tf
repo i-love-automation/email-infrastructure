@@ -32,7 +32,7 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command     = "/usr/local/bin/npm install --prefix ${path.module}/lambda"
+    command     = "chmod +x ${path.module}/lambda/execute.sh && ${path.module}/lambda/execute.sh"
     interpreter = ["/bin/bash", "-c"]
   }
 
