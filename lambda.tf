@@ -32,7 +32,8 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command = "ls -la ${path.module}/lambda && which npm"
+    command     = "ls -la ${path.module}/lambda"
+    interpreter = ["/bin/bash", "-c"]
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
