@@ -16,10 +16,6 @@ terraform {
     tfe = {
       source = "hashicorp/tfe"
     }
-    node-lambda-packager = {
-      source = "jSherz/node-lambda-packager"
-      version = "1.0.0"
-    }
   }
 }
 
@@ -30,5 +26,3 @@ provider "aws" {
 provider "tfe" {
   token = var.tfe_token
 }
-
-provider "node-lambda-packager" {}
