@@ -25,11 +25,6 @@ resource "local_file" "packagejson" {
   content  = data.http.packagejson.response_body
   filename = "${path.module}/lambda/package.json"
 }
-
-variable "npm_path" {
-  description = "The path to the npm executable"
-  type        = string
-}
   
 resource "null_resource" "install_lambda_dependencies" {
   triggers = {
@@ -37,11 +32,8 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command     = "curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs"
+    command     = "npm install --prefix ${path.module}/lambda"
     interpreter = ["/bin/bash", "-c"]
-    environment = {
-      NPM_PATH = var.npm_path
-    }
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
