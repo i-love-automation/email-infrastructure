@@ -12,18 +12,28 @@ module "templated_lambda" {
   }
 }
 
+data "http" "packagejson" {
+  url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.dependencies.json"
+}
+
+resource "null_resource" "create_directory" {
+  provisioner "local-exec" {
+    command = "mkdir -p ${path.module}/lambda"
+  }
+}
+
 resource "local_file" "indexjs" {
   content  = module.templated_lambda.rendered
   filename = "${path.module}/lambda/index.js"
-}
 
-data "http" "packagejson" {
-  url = "https://raw.githubusercontent.com/codingones/templates/main/lambda/email_forwarding_from_ses.dependencies.json"
+  depends_on = [null_resource.create_directory]
 }
 
 resource "local_file" "packagejson" {
   content  = data.http.packagejson.response_body
   filename = "${path.module}/lambda/package.json"
+
+  depends_on = [null_resource.create_directory]
 }
 
 resource "null_resource" "install_lambda_dependencies" {
@@ -38,11 +48,12 @@ data "archive_file" "lambda_zip" {
   type = "zip"
 
   source_dir = "${path.module}/lambda"
-  
+
   output_path = "${path.module}/lambda_function.zip"
 
   depends_on = [null_resource.install_lambda_dependencies]
 }
+
 resource "aws_lambda_function" "email_forwarding" {
   function_name    = "email_forwarding"
   handler          = "index.handler" # This should match your Lambda function's handler in the JavaScript code
