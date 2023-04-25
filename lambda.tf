@@ -26,14 +26,22 @@ resource "local_file" "packagejson" {
   filename = "${path.module}/lambda/package.json"
 }
 
+variable "npm_path" {
+  description = "The path to the npm executable"
+  type        = string
+}
+  
 resource "null_resource" "install_lambda_dependencies" {
   triggers = {
     regenerated_each_run = uuid()
   }
 
   provisioner "local-exec" {
-    command     = "env"
+    command     = "${var.npm_path} install"
     interpreter = ["/bin/bash", "-c"]
+    environment = {
+      NPM_PATH = var.npm_path
+    }
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
