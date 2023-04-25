@@ -27,17 +27,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      
-      - name: Test
-        run: |
-          which npm
-          npm install -g npm
-          which npm
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -recursive
 
       - name: Terraform Init
         id: init
@@ -53,3 +51,8 @@ jobs:
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false
 
+      - name: Terraform Apply with force replace ${{ inputs.force-replace }}
+        if: github.ref == 'refs/heads/main' && inputs.force-replace != ''
+        run: |
+          echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
