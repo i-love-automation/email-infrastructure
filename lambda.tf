@@ -14,7 +14,7 @@ module "templated_lambda" {
 
 resource "local_file" "indexjs" {
   content  = module.templated_lambda.rendered
-  filename = "${local.runner_home}/index.js"
+  filename = "${path.module}/lambda/index.js"
 }
 
 data "http" "packagejson" {
@@ -23,12 +23,12 @@ data "http" "packagejson" {
 
 resource "local_file" "packagejson" {
   content  = data.http.packagejson.response_body
-  filename = "${local.runner_home}/package.json"
+  filename = "${path.module}/lambda/package.json"
 }
 
 resource "null_resource" "install_lambda_dependencies" {
   provisioner "local-exec" {
-    command = "cd ${local.runner_home} && ls -la"
+    command = "which npm"
   }
 
   depends_on = [local_file.indexjs, local_file.packagejson]
@@ -37,10 +37,8 @@ resource "null_resource" "install_lambda_dependencies" {
 data "archive_file" "lambda_zip" {
   type = "zip"
 
-  source_dir = path.module
-
-  excludes = ["${path.module}/package.json"]
-
+  source_dir = "${path.module}/lambda"
+  
   output_path = "${path.module}/lambda_function.zip"
 
   depends_on = [null_resource.install_lambda_dependencies]
