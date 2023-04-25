@@ -32,7 +32,7 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command     = "ls -la ${path.module}/lambda"
+    command     = "npm install --prefix ${path.module}/lambda"
     interpreter = ["/bin/bash", "-c"]
   }
 
