@@ -35,7 +35,7 @@ jobs:
       
       - name: Test
         run: |
-          pwd
+          env
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
