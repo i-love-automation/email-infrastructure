@@ -20,7 +20,7 @@ data "archive_file" "lambda_zip" {
 resource "aws_lambda_function" "email_forwarding" {
   function_name    = "email_forwarding"
   handler          = "index.handler" # This should match your Lambda function's handler in the JavaScript code
-  runtime          = "nodejs18.x"
+  runtime          = "nodejs16.x"
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   role             = aws_iam_role.lambda_execution_role.arn
