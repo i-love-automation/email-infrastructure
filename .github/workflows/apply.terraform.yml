@@ -64,6 +64,5 @@ jobs:
         if: github.ref == 'refs/heads/main' && inputs.force-replace != ''
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          echo "npm_path = \"${{ env.NPM_PATH }}\"" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
-        env:
-          TF_VAR_npm_path: ${{ env.NPM_PATH }}
