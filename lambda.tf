@@ -37,7 +37,7 @@ resource "null_resource" "install_lambda_dependencies" {
   }
 
   provisioner "local-exec" {
-    command     = "${var.npm_path} install"
+    command     = "curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && apt-get install -y nodejs"
     interpreter = ["/bin/bash", "-c"]
     environment = {
       NPM_PATH = var.npm_path
