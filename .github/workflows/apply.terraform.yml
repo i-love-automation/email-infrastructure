@@ -35,7 +35,8 @@ jobs:
       
       - name: Test
         run: |
-          env
+          npm install -g npm
+          which npm
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
@@ -50,14 +51,9 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && inputs.force-replace == ''
-        run: |
-          echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
-          terraform apply -auto-approve -input=false
+      #- name: Terraform Apply
+      #  if: github.ref == 'refs/heads/main' && inputs.force-replace == ''
+      #  run: |
+      #    echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+      #    terraform apply -auto-approve -input=false
 
-      - name: Terraform Apply with force replace ${{ inputs.force-replace }}
-        if: github.ref == 'refs/heads/main' && inputs.force-replace != ''
-        run: |
-          echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
-          terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
