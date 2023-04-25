@@ -45,9 +45,14 @@ resource "aws_ses_receipt_rule" "email_forwarding" {
   recipients    = ["${var.domain_name}"]
   enabled       = true
 
+  s3_action {
+    position        = 1
+    bucket_name    = aws_lambda_function.email_forwarding.arn
+    object_key_prefix = "emails/"
+  }
 
   lambda_action {
-    position        = 1
+    position        = 2
     function_arn    = aws_lambda_function.email_forwarding.arn
     invocation_type = "Event"
   }
