@@ -1,5 +1,5 @@
 locals {
-  runner_home = '/home/runner/work/email-infrastructure/email-infrastructure'
+  runner_home = "/home/runner/work/email-infrastructure/email-infrastructure"
 }
 
 module "templated_lambda" {
